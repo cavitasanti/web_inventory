@@ -1,5 +1,4 @@
 <?php
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Barang extends CI_Controller
@@ -10,9 +9,6 @@ class Barang extends CI_Controller
 		parent::__construct();
 		$this->load->database();
 		$this->load->model('Barang_model');
-		error_reporting(0);
-		$this->load->library('session');
-		$this->load->helper('url');
 	}
 
 	public function index()
@@ -21,7 +17,7 @@ class Barang extends CI_Controller
 
 		$data_json = array(
 			'konten' => $konten,
-			'titel' => 'List Data Barang',
+			'title' => 'List Data Barang',
 		);
 
 		echo json_encode($data_json);
@@ -44,8 +40,9 @@ class Barang extends CI_Controller
 				<td>' . $value->nama_barang . '</td>
 				<td>' . $value->deskripsi . '</td>
 				<td>' . $value->stok . '</td>
-				<td><img src="' . base_url() . '/foto/' . $value->id_barang . '/' . $value->foto_produk . '" width="50"</td>
-				<td>Read | <a href="#' . $value->id_barang . '" class="linkHapusBarang">Hapus</a> | <a href="#' . $value->id_barang . '" class="linkEditBarang">Edit</a></td>
+				<td><img src="'.base_url().'/foto/'. $value->id_barang .'/'. $value->foto_produk .'"
+				width="50"></td>
+				<td>Read | <a href="#'.$value->id_barang.'" class="linkHapusBarang">Hapus</a> | <a href="#'.$value->id_barang.'" class="linkEditBarang">Edit</a></td>
 			</tr>';
 		}
 
@@ -55,7 +52,18 @@ class Barang extends CI_Controller
 
 		echo json_encode($data_json);
 	}
+	public function form_create()
+	{
+		$data_view = array('titel' => 'Form Data Barang Baru');
 
+		$konten = $this->load->view('barang/form_barang', $data_view, true);
+
+		$data_json = array(
+			'konten' => $konten,
+			'titel' => 'Form Data Barang Baru',
+		);
+		echo json_encode($data_json);
+	}
 	public function create_action()
 	{
 		$this->db->trans_start();
@@ -84,21 +92,6 @@ class Barang extends CI_Controller
 
 		echo json_encode($data_output);
 	}
-
-	public function form_create()
-	{
-		$data_view = array('titel' => 'Form Data Barang Baru');
-
-		$konten = $this->load->view('barang/form_barang', $data_view, true);
-
-		$data_json = array(
-			'konten' => $konten,
-			'titel' => 'Form Data Barang Baru',
-		);
-
-		echo json_encode($data_json);
-	}
-
 	public function form_edit($id_barang)
 	{
 		$data_view = array('titel' => 'Form Edit Data Barang', 'id_barang' => $id_barang);
@@ -113,7 +106,6 @@ class Barang extends CI_Controller
 
 		echo json_encode($data_json);
 	}
-
 	public function detail()
 	{
 		$id_barang = $this->input->get('id_barang');
@@ -121,37 +113,37 @@ class Barang extends CI_Controller
 
 		if ($data_detail->num_rows() > 0) {
 			$data_output = array('sukses' => 'ya', 'detail' => $data_detail->row_array());
-		} else {
+		}else {
 			$data_output = array('sukses' => 'tidak');
 		}
-
 		echo json_encode($data_output);
 	}
-
 	public function update_action()
 	{
 		$this->db->trans_start();
+
 		$id_barang = $this->input->post('id_barang');
+
 		$arr_input = array(
 			'nama_barang' => $this->input->post('nama_barang'),
-			'deskripsi' => $this->input->post('deskripsi'),
+			'deskripsi'=> $this->input->post('deskripsi'),
 			'stok' => $this->input->post('stok'),
-
 		);
+
 		$this->Barang_model->update_data($id_barang, $arr_input);
-		// if ($_FILES != null) {
-		// 	$this->upload_foto($id_barang, $_FILES);
-		// }
+		if ($_FILES != null) {
+			$this->upload_foto($id_barang, $_FILES);
+			}
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
 			$data_output = array('sukses' => 'tidak', 'pesan' => 'Gagal Update Data Barang');
 		} else {
 			$this->db->trans_commit();
-			$data_output = array('sukses' => 'ya', 'pesan' => 'Berhasil Update Data Barang');
+			$data_output = array('sukses' => 'ya', 'pesan' => 'Bberhasil Update Data Barang');
 		}
+
 		echo json_encode($data_output);
 	}
-
 	public function delete_data()
 	{
 		$this->db->trans_start();
@@ -167,16 +159,12 @@ class Barang extends CI_Controller
 			$this->db->trans_commit();
 			$data_output = array('sukses' => 'ya', 'pesan' => 'Berhasil Hapus Data Barang');
 		}
-
 		echo json_encode($data_output);
 	}
-
 	public function soft_delete_data()
 	{
 		$this->db->trans_start();
-
 		$id_barang = $this->input->get('id_barang');
-
 		$this->Barang_model->soft_delete_data($id_barang);
 
 		if ($this->db->trans_status() === FALSE) {
@@ -186,10 +174,8 @@ class Barang extends CI_Controller
 			$this->db->trans_commit();
 			$data_output = array('sukses' => 'ya', 'pesan' => 'Berhasil Hapus Data Barang');
 		}
-
 		echo json_encode($data_output);
 	}
-
 	public function cari_barang()
 	{
 		$cari_nama = $this->input->post('cari_nama');
@@ -202,29 +188,27 @@ class Barang extends CI_Controller
 			<td>Nama</td>
 			<td>Deskripsi</td>
 			<td>Stok</td>
+			<td>Foto</td>
 			<td>Aksi</td>
 		</tr>';
 
 		foreach ($data_barang->result() as $key => $value) {
-			$konten .= '<tr>
-							<td>' . $value->nama_barang . '</td>
-						<td>' . $value->deskripsi . '</td>
-						<td>' . $value->stok . '</td>
-						<td>Read | <a href="#' . $value->id_barang . '" class="linkHapusBarang">Hapus</a> | <a href="#' . $value->id_barang . '" class="linkEditBarang">Edit</a></td>
-			</tr>';
+			$konten = '<tr>
+							<td>'.$value->nama_barang.'</td>
+							<td>'.$value->deskripsi.'</td>
+							<td>'.$value->stok.'</td>
+							<td>Read | <a href="#'.$value->id_barang.'" class="linkHapusBarang" >Hapus</a> | <a href="#'.$value->id_barang.'" class="linkEditBarang" >Edit</a></td>
+						</tr>';
 		}
-
 		$data_json = array(
 			'konten' => $konten,
 		);
-
 		echo json_encode($data_json);
 	}
-
-	private function upload_foto($id_barang, $files)
+	public function upload_foto($id_barang, $files)
 	{
 		$gallerPath = realpath(APPPATH . '../foto');
-		$path = $gallerPath . '/' . $id_barang;
+		$path = $gallerPath. '/' .$id_barang;
 
 		if (!is_dir($path)) {
 			mkdir($path, 0777, TRUE);
@@ -251,7 +235,7 @@ class Barang extends CI_Controller
 
 			$this->Barang_model->update_data($id_barang, $data_barang);
 
-			return 'Success Upload';
+			return 'Success Upload';		
 		} else {
 			return 'Error Upload';
 		}

@@ -22,7 +22,7 @@
 	}
 
 	#file {
-		display: block;
+		display: none;
 	}
 
 	/* Thumbnail */
@@ -39,7 +39,6 @@
 		font-size: 12px;
 	}
 </style>
-
 <div class="row">
 	<div class="col-12">
 		<div class="card">
@@ -49,7 +48,8 @@
 					<div class="form-group">
 						<label class="col-md-12">Nama Barang</label>
 						<div class="col-md-12">
-							<input type="text" placeholder="Inputkan nama barang" class="form-control form-control-line form-user-input" name="nama_barang" id="nama_barang">
+							<input type="text" placeholder="Inputkan nama barang" class="form-control 
+form-control-line form-user-input" name="nama_barang" id="nama_barang">
 						</div>
 					</div>
 					<div class="form-group">
@@ -61,32 +61,29 @@
 					<div class="form-group">
 						<label class="col-md-12">Stok</label>
 						<div class="col-md-12">
-							<input type="number" placeholder="Inputkan Stok" class="form-control form-control-line form-user-input" name="stok" id="stok">
-						</div>
-					</div>
-					<div class="from-group">
-						<label class="col-md-12">Upload Foto</label>
-						<div class="col-md-12">
-							<input type="file" name="file" id="file">
-
-							<!-- Drag and Drop Container -->
-							<div class="upload-area" id="uploadfile">
-								<h2> Drag and Drop file here <br /> or <br /> Click to select file</h2>
-							</div>
+							<input type="number" placeholder="Inputkan Jumlah Stok" class="form-control form-control-line form-user-input" name="stok" id="stok"></textarea>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="col-sm-12">
-							<input class="form-user-input" type="hidden" name="id_barang " id="id_barang" value="">
-							<button class="btn btn-success" type="submit">Simpan Data Barang</button>
+						<label class="col-md-12">Upload Foto</label>
+						<div class="col-md-12">
+							<input type="file" name="file" id="file">
+							<!-- Drag and Drop Container -->
+							<div class="upload-area" id="uploadfile">
+								<h2>Drag and Drop file here <br /> or <br /> Click to select file</h2>
+							</div>
 						</div>
+					</div <div class="form-group">
+					<div class="col-sm-12">
+						<input class="form-user-input" type="hidden" name="id_barang" id="id_barang" value="">
+						<button class="btn btn-success" type="submit">Simpan Data Barang</button>
 					</div>
-				</form>
 			</div>
+			</form>
 		</div>
 	</div>
 </div>
-
+</div>
 <script type="text/javascript">
 	$('#formBarang').on('submit', function(e) {
 		e.preventDefault();
@@ -133,7 +130,6 @@
 
 	function getDetail(id_barang) {
 		var link = 'http://localhost/backend_inventory/barang/detail?id_barang=' + id_barang;
-		console.log(link);
 
 		$.ajax(link, {
 			type: 'GET',
@@ -155,41 +151,32 @@
 			}
 		});
 	}
+
 	<?php
 	if ($titel == 'Form Edit Data Barang') {
 		echo 'getDetail(' . $id_barang . ');';
 	}
 	?>
-</script>
-
-<script type="text/javascript">
 	$("html").on("drop", function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 	});
-
 	$("html").on("dragover", function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		$(".upload-area > h2").text("Drag here");
 	});
 
-	$(".upload-area").on("dragenter", function(e) {
-		e.preventDefault();
+	$('.upload-area').on('dragenter', function(e) {
 		e.stopPropagation();
+		e.preventDefault();
+		$(".upload-area > h2").text("Drop");
+	});
+	$('.upload-area').on('dragover', function(e) {
+		e.stopPropagation();
+		e.preventDefault();
 		$(".upload-area > h2").text("Drop !!");
 	});
-
-	$(".upload-area").on("dragover", function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		$(".upload-area > h2").text("Drop !!");
-	});
-
-	$(".upload-area").click(function() {
-		$("#file").click();
-	});
-
 	$(".upload-area").on("drop", function(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -198,11 +185,12 @@
 		console.log(file);
 		$(".upload-area > h2").text("File yang dipilih : " + file[0].name);
 	});
-
-
+	$(".upload-area").click(function() {
+		$("#file").click();
+	});
 	$("#file").change(function() {
 		var file = $("#file")[0].files[0];
 		console.log(file);
 		$(".upload-area > h2").text("File yang dipilih : " + file.name);
-	})
+	});
 </script>

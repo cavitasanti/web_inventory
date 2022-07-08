@@ -1,34 +1,30 @@
 <?php
-defined('BASEPATH') OR exit('No direct script acces allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Departemen extends CI_Controller
 {
-	public function index()
+	public function __construct()
 	{
-		$konten = $this->load->view('departemen/list_departemen', null, true);
-
-		$data_json = array(
-			'konten' => $konten,
-			'titel' => 'List Data Departemen',
-		);
-		echo json_encode($data_json);
+		parent::__construct();
+		$this->load->model('Departemen_model');
 	}
+
 	public function list_departemen()
 	{
-
 		$data_departemen = $this->Departemen_model->get_departemen();
 
 		$konten = '<tr>
-		<td>Id Departemen</td>
-		<td>Nama Departemen</td>
-		</tr>';
+                <td>id_departemen</td>
+                <td>nama_departemen</td>
+                <td>Aksi</td>
+            </tr>';
 
-		foreach ($data_departemen->result() as $key => $value){
+		foreach ($data_departemen->result() as $key => $value) {
 			$konten .= '<tr>
-							<td>'.$value->id_departemen.'</td>
-							<td>'.$value->nama_departemen.'</td>
-							<td>Read | Hapus | Edit</td>
-						</tr>';
+                            <td>' . $value->id_departemen . '</td>
+                            <td>' . $value->nama_departemen . '</td>
+                            <td>Read | Hapus | Edit</td>
+                        </tr>';
 		}
 		$data_json = array(
 			'konten' => $konten,
@@ -36,5 +32,3 @@ class Departemen extends CI_Controller
 		echo json_encode($data_json);
 	}
 }
-
-?>

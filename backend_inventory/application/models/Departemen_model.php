@@ -1,8 +1,9 @@
 <?php
-defined('BASEPATH') OR exit('No direct script acces allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Departemen_model extends CI_Model
 {
+
 	public function get_departemen()
 	{
 		$this->db->select('*');
@@ -10,5 +11,3 @@ class Departemen_model extends CI_Model
 		return $this->db->get();
 	}
 }
-
-?>
